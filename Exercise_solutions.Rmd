@@ -1,0 +1,85 @@
+---
+title: "Untitled"
+author: "Leo"
+date: "2024-01-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setup: Install & load required packages
+```{r}
+#install.packages("ctsem")
+library(ctsem)
+library(ctsemOMX)
+```
+
+#Exercise 1
+Using the dataset ctExample2, set up a CLPM in continuous time with 3 latent variables and no manifest variables for 8 time points using the ctModel() function.
+```{r}
+model1 <- ctModel(n.latent = 3, n.manifest = 3, Tpoints = 8, 
+  manifestNames = c("LeisureTime", "Happiness", "MoneyInt"), 
+  latentNames = c("LeisureTime", "Happiness", "MoneyInt"), LAMBDA = diag(3))
+
+```
+
+# Exercise 2
+Fit the model to the data using the ctfit() function
+```{r}
+model1fit <- ctFit(ctExample2, ctmodelobj = model1)
+
+
+summary(model1fit)
+
+```
+
+# Exercise 3
+Plot the resulting fit for the auto and cross-effects
+```{r}
+plot(model1fit, wait = FALSE)
+```
+
+# Exercise 4
+Interpret the model parameters and its fit in your own words:
+
+## With regards to the auto-effects
+
+
+Autoregression in relative comparison from Drift matrix output:
+drift_LeisureTime	1.423793e-01	DRIFT
+drift_Happiness	-1.946983e-01	DRIFT
+drift_MoneyInt	-5.980585e+00	DRIFT
+
+The smaller, the less stable: So Leisure time is a more stable construct than Happiness, which in turn is more stable than MoneyInt
+
+## With regards to the cross-effects
+
+Cross-effects from Drift matrix output:
+drift_Happiness_LeisureTime	-6.707003e-02	DRIFT	= 0
+drift_MoneyInt_LeisureTime	-3.151368e-01	DRIFT	 = 0
+drift_LeisureTime_Happiness	3.775768e-02	DRIFT	= 0
+drift_MoneyInt_Happiness	-2.577544e-02	DRIFT	 = 0
+drift_LeisureTime_MoneyInt	7.450805e+00	DRIFT = cross-effect 7.45
+drift_Happiness_MoneyInt	-1.454579e+00	DRIFT	= cross-effect -1.45
+
+The data suggests, that more LeisureTime leads to higher MoneyInt.
+
+Additionally, the data suggests that more Happiness leads to decreased MoneyInt.
+
+No other effects are present.
+
+
+## With regards to the plots of the autoregressions and cross-effects
+### Autoregression plot:
+We see that the choice of time interval affects the parameter size.
+High initial stability for autoregression value of MoneyInt that rapidly reduces to 0 for even small time intervals.
+Happiness and Leisure time exhibit a comparable trends: Shorter intervals would suggest a higher stability of the two constructs.
+
+### Crossregression plot
+For both the effects LeisureTime -> MoneyInt and Happiness -> MoneyInt, the cross-effect values are higher for shorter intervals. The small values for the latter suggest it might be too small in size to be practically relevant.
+
+
+
+

@@ -1,0 +1,112 @@
+---
+title: "Untitled"
+author: "Leo"
+date: "2024-01-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Install & load required packages
+```{r}
+#install.packages("ctsem")
+library(ctsem)
+library(ctsemOMX)
+```
+
+## Load dataset
+```{r}
+data("datastructure", package = "ctsem")
+datastructure
+```
+## Model specification fun
+```{r}
+#As in figure 3, no manifest variables because of loadings = 1
+examplemodel <- ctModel(n.latent = 2, n.manifest = 2, Tpoints = 3, 
+  LAMBDA = diag(2))
+
+## Section 6, uses different dataset
+example1model <- ctModel(n.latent = 2, n.manifest = 2, Tpoints = 6, 
+  manifestNames = c("LeisureTime", "Happiness"), 
+  latentNames = c("LeisureTime", "Happiness"), LAMBDA = diag(2))
+
+#More complicated, can play around with this
+#As in figure 2
+semModel <- ctModel(n.latent = 2, n.manifest = 3, TRAITVAR = "auto",
+  n.TIpred = 2, n.TDpred = 1, Tpoints = 3,
+  LAMBDA = matrix(c(1, 0, 0, 0, 1, "lambda32"), nrow = 3))
+
+```
+
+# Model estimation and fitting
+```{r}
+data("ctExample1", package = "ctsem")
+
+head(ctExample1)
+
+example1model <- ctModel(n.latent = 2, n.manifest = 2, Tpoints = 6, 
+  manifestNames = c("LeisureTime", "Happiness"), 
+  latentNames = c("LeisureTime", "Happiness"), LAMBDA = diag(2))
+
+example1fit <- ctFit(datawide = ctExample1, ctmodelobj = example1model)
+
+
+summary(example1fit)
+```
+
+#Plotting & Interpretation
+```{r}
+plot(example1fit)
+```
+
+## With regards to the auto-effects
+
+CT Autoregression values can be compared relatively from the Drift matrix output:
+The smaller the absolute values are, the less stable a given construct is.
+
+In this example, the value for LeisureTime -0.02800085 is larger than the one for happiness with -0.08963823. 
+This suggests that Leisure time is a more stable construct than happiness.
+
+## With regards to the cross-effects
+
+Cross-effects are also compared with their counterparts in the Drift matrix output. The higher value of drives the causal relationship of two given variables.
+
+In our example, the values are:
+
+drift_Happiness_LeisureTime	-0.01112172	DRIFT	
+drift_LeisureTime_Happiness	-0.06974174	DRIFT
+
+It appears that LeisureTime drives the relationship, so that more LeisureTime leads to less happiness. However, as the values are really low, there might also be no effect of the variables on another.
+
+## With regards to the plots of the autoregressions and cross-effects
+
+Usually, it can be inferred that the choice of time interval affects the parameter size. This can be described verbally and also be compared across parameters of interest.
+
+In our example... 
+
+### Autoregression plot:
+We see that the choice of time interval affects the parameter size.
+Both variables exhibit high initial stability values, that decrease slightly for increased time intervals. As seen before, Leisure time is the more stable construct.
+
+### Crossregression plot
+Interestingly, for the effect of LeisureTime ->  Happiness, the cross-effect value are higher for larger intervals. However, the small values suggest it might be too small in size to be practically relevant.
+
+
+
+# Hypothesis testing
+Is the cross-effect of LeisureTime -> Happiness different from 0?
+```{r}
+
+testmodel <- example1model
+testmodel$DRIFT[1, 2] <- 0
+testfit <- ctFit(datawide = ctExample1, ctmodelobj = testmodel)
+
+summary(example1fit)$DRIFT
+summary(testfit)$DRIFT
+
+mxCompare(example1fit$mxobj, testfit$mxobj)
+
+```
+P-value of Likelihood ratio test is significant, so cannot assume that cross-effect is 0.
