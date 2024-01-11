@@ -56,10 +56,7 @@ example1fit <- ctFit(datawide = ctExample1, ctmodelobj = example1model)
 summary(example1fit)
 ```
 
-#Plotting & Interpretation
-```{r}
-plot(example1fit)
-```
+# Plotting & Interpretation
 
 ## With regards to the auto-effects
 
@@ -81,6 +78,10 @@ drift_LeisureTime_Happiness	-0.06974174	DRIFT
 It appears that LeisureTime drives the relationship, so that more LeisureTime leads to less happiness. However, as the values are really low, there might also be no effect of the variables on another.
 
 ## With regards to the plots of the autoregressions and cross-effects
+
+```{r}
+plot(example1fit)
+```
 
 Usually, it can be inferred that the choice of time interval affects the parameter size. This can be described verbally and also be compared across parameters of interest.
 
