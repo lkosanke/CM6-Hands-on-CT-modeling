@@ -1,6 +1,6 @@
 ---
 title: "Hands On continuous time modeling with ctsem"
-author: "Valentin Kriegmair"
+author: "Leonard Kosanke & Valentin Kriegmair"
 format: 
   revealjs:
     theme: "serif"
