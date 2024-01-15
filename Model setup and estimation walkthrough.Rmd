@@ -75,7 +75,7 @@ In our example, the values are:
 drift_Happiness_LeisureTime	-0.01112172	DRIFT	
 drift_LeisureTime_Happiness	-0.06974174	DRIFT
 
-It appears that LeisureTime drives the relationship, so that more LeisureTime leads to less happiness. However, as the values are really low, there might also be no effect of the variables on another.
+It appears that Happiness drives the relationship, so that more Happiness leads to less LeisureTime. However, as the values are really low, there might also be no effect of the variables on another.
 
 ## With regards to the plots of the autoregressions and cross-effects
 
@@ -92,12 +92,12 @@ We see that the choice of time interval affects the parameter size.
 Both variables exhibit high initial stability values, that decrease slightly for increased time intervals. As seen before, Leisure time is the more stable construct.
 
 ### Crossregression plot
-Interestingly, for the effect of LeisureTime ->  Happiness, the cross-effect value are higher for larger intervals. However, the small values suggest it might be too small in size to be practically relevant.
+Interestingly, for the effect of Happiness ->  LeisureTime, the cross-effect value are higher for larger intervals. However, the small values suggest it might be too small in size to be practically relevant.
 
 
 
 # Hypothesis testing
-Is the cross-effect of LeisureTime -> Happiness different from 0?
+Is the cross-effect of Happiness -> LeisureTime different from 0?
 ```{r}
 
 testmodel <- example1model
