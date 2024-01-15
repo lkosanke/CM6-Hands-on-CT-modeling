@@ -170,4 +170,4 @@ df_wide <- ctIntervalise(datawide = wideexample, Tpoints = 3, n
 
 # Next: Model set-up and interpretation walkthrough
 
-## {background-image="figures/figure2-1.png" background-size="contain" background-repeat="no-repeat"}
+# {background-image="figures/figure2-1.png" background-size="contain" background-repeat="no-repeat"}
