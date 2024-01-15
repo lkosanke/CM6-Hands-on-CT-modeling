@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "CM6 Hands on ctsem modelling - Excercise Solution"
 author: "Leo"
 date: "2024-01-09"
 output: html_document
@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 The following are exercises based on a toy example for showcasing ctsem's
 capabilities by Charles Driver (https://cdriver.netlify.app/post/dtbivariate/).
 (The code is simplified and adjusted to an exercise format with ctsemOMX.)
+
 ## Setup: Install & load required packages
 ```{r}
 #install.packages("ctsem")
@@ -104,14 +105,14 @@ plot(modelfit1, wait = FALSE)
 ## Exercise 4
 Look at the fit summary (`summary(example1fit)`) and the plots. Interpret the model 
 parameters and its fit in your own words. Do Stress and Quality influence each other?
-How does this change as a function of the time interval considered? Which variable
+How does this change as a function of the time interval change? Which variable
 is more stable?
 ```{r}
 summary(modelfit1)
 ```
 ### Cross-effects
 Cross effects are interpreted analogous to regression effects:
-An one unit increase of Stress leads to a 0.23 unit decrease in Quality.
+A one unit increase of Stress leads to a 0.23 unit decrease in Quality.
 A one unit increase of Quality leads to an 0.19 unit increase in Stress.
 
 ### Auto-effects
@@ -121,9 +122,15 @@ time interval.
 
 However in general for the diagonal drift coefficients one can say:
 The closer to 0 the drift parameter the more stable the process of the respective 
-construct. The more negative a parameter gets the less stable the process. (This
-can be understood when looking at the solution to the stochastic differential
-equation)
+construct. The more negative a parameter gets the less stable the process. This 
+can be understood when considering the Drift Matrix A in the solution to the 
+stochastic differential equation: $$\mathrm{e}^{\mathbf{A} \cdot \Delta t_i}$$
+
+As $$a_{11}$$ or $$a_{22}$$ approache 0 the solution approaches 1 (stability):
+$$\mathrm{e}^{\mathbf{A} \cdot \Delta t_i} = \mathrm{e}^{0 \cdot \Delta t_i} = 1$$
+and as $$a_{11}$$ or $$a_{22}$$ approach negative infinity the solution 
+approaches 0 (instability):
+$$\mathrm{e}^{\mathbf{A} \cdot \Delta t_i} = \mathrm{e}^{-\infty \cdot \Delta t_i} = 0$$
 
 Here we see Quality as a more stable construct across different
 time intervals. While the auto-regressive effect of Stress decreases the longer
