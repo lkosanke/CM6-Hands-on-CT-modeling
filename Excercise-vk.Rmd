@@ -1,5 +1,5 @@
 ---
-title: "CM6 Hands on ctsem modelling - Excercise Solution"
+title: "CM6 Hands on ctsem modelling - Excercise"
 author: "Leonard Kosanke & Valentin Kriegmair"
 date: "18-01-2024"
 output: html_document
