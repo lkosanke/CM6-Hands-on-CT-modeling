@@ -61,14 +61,15 @@ summary(example1fit)
 ## With regards to the auto-effects
 
 CT Autoregression values can be compared relatively from the Drift matrix output:
-The smaller the absolute values are, the less stable a given construct is.
+The closer to 0, the more stable the process of the respective construct.
 
-In this example, the value for LeisureTime -0.02800085 is larger than the one for happiness with -0.08963823. 
+In this example, the value for LeisureTime -0.02800085 is closer to 0 than the one for happiness with -0.08963823. 
 This suggests that Leisure time is a more stable construct than happiness.
 
 ## With regards to the cross-effects
 
-Cross-effects are also compared with their counterparts in the Drift matrix output. The higher value of drives the causal relationship of two given variables.
+Cross effects are interpreted like regression coefficients. A1 unit increase in the one variable leads to X unit increase/ decrease in the other.
+Cross-effects are also compared with their counterparts in the Drift matrix output. The higher value of one variable drives the causal relationship of two given variables.
 
 In our example, the values are:
 
