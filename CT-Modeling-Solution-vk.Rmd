@@ -155,7 +155,7 @@ plot(traitfit, wait = FALSE)
 # Excercise 6 (optional)
 Extend the `LAMBDA` function to include the second Stress indicator `Stress2`
 
-first run this to extend 
+first run this to extend the data set
 ```{r}
 # from long format to wide format with absolute time values
 df_wide1 <- ctLongToWide(datalong =df , id ="id" ,
