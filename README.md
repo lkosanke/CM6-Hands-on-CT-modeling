@@ -5,4 +5,4 @@ Prerequisit: Have [R and R-Studio (Posit)](https://posit.co/download/rstudio-des
 
 For the Excercise go to this [link](https://github.com/lkosanke/CM6-Hands-on-CT-modeling/blob/main/Excercise.Rmd) and click on the download button in top right (⌘+shift+s / str+shift+s).
 
-Click [here](https://github.com/lkosanke/CM6-Hands-on-CT-modeling/blob/main/Excercise_solutions.html) to download the solutions.
+To view the solutions click [here](https://github.com/lkosanke/CM6-Hands-on-CT-modeling/blob/main/Excercise_solutions.html) and download the file.
