@@ -153,7 +153,7 @@ plot(traitfit, wait = FALSE)
 
 
 # Excercise 6 (optional)
-Extend the `LAMBDA` function to include the second Stress indicator `Stress2`
+Extend the `LAMBDA` matrix to include the second Stress indicator `Stress2`
 
 first run this to extend the data set
 ```{r}
