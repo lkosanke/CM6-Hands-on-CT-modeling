@@ -3,7 +3,7 @@ title: "Hands On continious time modeling with ctsem"
 author: "Valentin Kriegmair"
 format: 
   revealjs:
-    theme: "moon"
+    theme: "serif"
     slide-number: true
     incremental: true
     transition: "none" 
@@ -26,7 +26,7 @@ What are the assumptions about time in the general cross lagged panel model (GCL
 3. subjects are measured at the same time points
 
 ## Recap II
-What limitations does discrete time modeling of longitudinal data?
+What are limitations of treating time as a discrete variable when modeling longitudinal data?
 
 * biased parameter estimates due to:
 
@@ -42,7 +42,7 @@ Multivariate stochastic differential equation:
 \mathrm{d} \boldsymbol{\eta}_i(t)=\left({\mathbf{A}} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
 \end{gather*}
 
-## Recap II {.smaller}
+## Recap II
 Multivariate stochastic \color{red}{differential} equation:
 \begin{gather*}
 \color{red}{\mathrm{d}} \boldsymbol{\eta}_i(\color{red}{t})=\left(\mathbf{A} \boldsymbol{\eta}_i(\color{red}{t})+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \color{red}{\mathrm{d} t}+\mathbf{G} \color{red}{\mathrm{d}} \mathbf{W}_i(\color{red}{t})
@@ -50,7 +50,7 @@ Multivariate stochastic \color{red}{differential} equation:
 modelling change in latent variables $\boldsymbol{\eta}_i(t)$
  as a function of time over infinitesimal small time steps $\color{red}{\mathrm{d} t}$
 
-## Recap II {.smaller}
+## Recap II
 Multivariate stochastic differential equation:
 \begin{gather*}
 \mathrm{d} \boldsymbol{\eta}_i(t)=\left(\color{red}{\mathbf{A}} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
@@ -111,51 +111,62 @@ library(ctsem) # loads ctsem
 library(ctsemOMX) # loads ctsem and ctsemOMX
 ```
 
-## Data Structure {.smaller}
+## Data Structure {.smaller auto-animate="true"}
+::: {.fragmet}
 `ctsemOMX` uses wide data with time intervals specified in columns:
 ```{r}
-data("datastructure", package = "ctsem")
-datastructure
+#| output: false
+set.seed(1)
+
+# simulate data with 10 time points:
+gm <- ctModel(LAMBDA=matrix(c(
+  1,0,
+  .8,0,
+  0,1),ncol=2),
+  MANIFESTVAR = diag(.5,3),
+  DIFFUSION=matrix(c(.8,.5,0,.2),2,2),
+  DRIFT=c(
+    -.5,0,
+    -.3,-.2),
+  T0MEANS = c(20,-10),
+  TRAITVAR=matrix(c(1,.7,0,.2),2,2),
+  Tpoints=10,manifestNames = c('Stress','Stress2','Quality'))
+
+df <-data.frame(ctGenerate(ctmodelobj = gm,n.subjects = 100,burnin = 2))
+df_wide0 <- ctLongToWide(datalong =df , id ="id" ,
+  time = "time" , manifestNames = c('Stress', "Quality"))
+
+df_wide <- ctIntervalise(datawide = df_wide0,
+            Tpoints = 10, n.manifest = 2,
+            manifestNames = c("Stress", "Quality"))
+
+dataframewide<- as.data.frame(df_wide)
 ```
-
-time points can be interindividually varying
-
-## Data Structure {.smaller}
-`ctsemOMX` uses wide data with time intervals specified in columns:
 ```{r}
-data("datastructure", package = "ctsem")
-datastructure
+library(tidyverse)
+dataframewide <- dataframewide %>% select( Quality_T0, Quality_T1,Quality_T2, dT1:dT3)
+head(dataframewide)
 ```
 
-time points can be interindividually varying
+(time points can also be interindividually varying)
+:::
 
-
-converting from the typical long format to wide:
-```{.r}
+::: {.fragmet}
+Function to convert to wideformat:
+```r
 df_wide <- ctLongToWide(datalong = df_long, id = "id",
-  time = "time", manifestNames = c("Y1", "Y2", "Y3"))
+  time = "time", manifestNames = c("Quality", ...))
 ```
+:::
 
-## Data Structure {.smaller}
-`ctsemOMX` uses wide data with time intervals specified in columns:
-```{r}
-data("datastructure", package = "ctsem")
-datastructure
+::: {.fragmet}
+Function to create time intervals:
+```r
+df_wide <- ctIntervalise(datawide = wideexample, Tpoints = 3, n
+  manifest = 2, manifestNames = c("Quality", ...))
 ```
+:::
 
-time points can be interindividually varying
-
-
-converting from the typical long format to wide:
-```{.r}
-df_wide <- ctLongToWide(datalong = df_long, id = "id",
-  time = "time", manifestNames = c("Y1", "Y2", "Y3"))
-```
-
-
-creating time intervals:
-```{.r}
-df_wide <- ctIntervalise(datawide = wideexample, Tpoints = 4, n
-  manifest = 2, manifestNames = c("Y1", "Y2", "Y3"))
-```
 # Next: Model set-up and interpretation walkthrough
+
+## {background-image="figures/figure2-1.png" background-size="contain" background-repeat="no-repeat"}
