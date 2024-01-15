@@ -1,0 +1,172 @@
+---
+title: "Hands On continuous time modeling with ctsem"
+author: "Leonard Kosanke & Valentin Kriegmair"
+format: 
+  revealjs:
+    theme: "serif"
+    slide-number: true
+    incremental: true
+    transition: "none" 
+
+---
+
+## Outline
+* Recap
+* Walk-through
+* Excercise
+* Summary
+
+## Recap I
+What are the assumptions about time in the general cross lagged panel model (GCLPM)?
+
+1. time prgoresses in discrete steps
+
+2. equally spaced measurement occasions
+
+3. subjects are measured at the same time points
+
+## Recap II
+What are limitations of treating time as a discrete variable when modeling longitudinal data?
+
+* biased parameter estimates due to:
+
+  * unequally spaced measurement waves in the panel data
+
+  * measurement of individual subjects at each wave spread out over time
+
+* uncomparable parameter estimates across studies
+
+## Recap II
+Multivariate stochastic differential equation:
+\begin{gather*}
+\mathrm{d} \boldsymbol{\eta}_i(t)=\left({\mathbf{A}} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
+\end{gather*}
+
+## Recap II
+Multivariate stochastic \color{red}{differential} equation:
+\begin{gather*}
+\color{red}{\mathrm{d}} \boldsymbol{\eta}_i(\color{red}{t})=\left(\mathbf{A} \boldsymbol{\eta}_i(\color{red}{t})+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \color{red}{\mathrm{d} t}+\mathbf{G} \color{red}{\mathrm{d}} \mathbf{W}_i(\color{red}{t})
+\end{gather*}
+modelling change in latent variables $\boldsymbol{\eta}_i(t)$
+ as a function of time over infinitesimal small time steps $\color{red}{\mathrm{d} t}$
+
+## Recap II
+Multivariate stochastic differential equation:
+\begin{gather*}
+\mathrm{d} \boldsymbol{\eta}_i(t)=\left(\color{red}{\mathbf{A}} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
+\end{gather*}
+modelling change as a function of time over infinitesimal small time steps $\mathrm{d} t$
+
+$\color{red}{\mathbf{A}}$: drift matrix with auto effects on the diagonal and cross effects on the off-diagonals ($\mathbf{A} \in \mathbb{R}^{v \times v}$).
+
+
+## Recap II {.smaller}
+Multivariate stochastic differential equation:
+\begin{gather*}
+\mathrm{d} \boldsymbol{\eta}_i(t)=\left(\mathbf{A} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
+\end{gather*}
+modelling change as a function of time over infinitesimal small time steps $\mathrm{d} t$
+
+$\mathbf{A}$: drift matrix with auto effects on the diagonal and cross effects on the off-diagonals ($\mathbf{A} \in \mathbb{R}^{v \times v}$).
+
+$\mathbf{z_i}$: time independent predictors
+
+$\boldsymbol{\chi}_i(t)$: time dependent predictors
+
+$\mathbf{W}_i(t)$: stochastic error term (Wiener process)
+
+$\mathbf{G}$: diffusion matrix
+
+## Recap II {.smaller}
+Multivariate stochastic differential equation:
+\begin{gather*}
+\mathrm{d} \boldsymbol{\eta}_i(t)=\left(\mathbf{A} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
+\end{gather*}
+measurement part:
+\begin{gather*}
+\mathbf{y}(t)=\boldsymbol{\Lambda} \boldsymbol{\eta}(t)+{\boldsymbol{\tau}}+\boldsymbol{\varepsilon}(t)
+\end{gather*}
+\begin{gather*}
+\boldsymbol{\varepsilon}(t) \sim \mathrm{N}(\mathbf{0}, \mathbf{Θ})
+\end{gather*}
+
+$\boldsymbol{\Lambda}$: factor loadings
+
+$\boldsymbol{\tau}$: intercepts
+
+$\boldsymbol{\varepsilon}(t)$: measurement error
+
+## {background-image="figures/figure3-1.png" background-size="contain" background-repeat="no-repeat"}
+## {background-image="figures/figure3-2.png" background-size="contain" background-repeat="no-repeat"}
+
+## Introducing `ctsem` & `ctsemOMX` {.smaller}
+* R-packages `ctsem` & `ctsemOMX` to handle the math
+* `ctsem` interfaces with Stan
+* `ctsemOMX` interfaces with OpenMx
+* today we will use `ctsemOMX`
+```{r}
+# install.packages("ctsem")
+# install.packages("ctsemOMX")
+library(ctsem) # loads ctsem
+library(ctsemOMX) # loads ctsem and ctsemOMX
+```
+
+## Data Structure {.smaller auto-animate="true"}
+::: {.fragmet}
+`ctsemOMX` uses wide data with time intervals specified in columns:
+```{r}
+#| output: false
+set.seed(1)
+
+# simulate data with 10 time points:
+gm <- ctModel(LAMBDA=matrix(c(
+  1,0,
+  .8,0,
+  0,1),ncol=2),
+  MANIFESTVAR = diag(.5,3),
+  DIFFUSION=matrix(c(.8,.5,0,.2),2,2),
+  DRIFT=c(
+    -.5,0,
+    -.3,-.2),
+  T0MEANS = c(20,-10),
+  TRAITVAR=matrix(c(1,.7,0,.2),2,2),
+  Tpoints=10,manifestNames = c('Stress','Stress2','Quality'))
+
+df <-data.frame(ctGenerate(ctmodelobj = gm,n.subjects = 100,burnin = 2))
+df_wide0 <- ctLongToWide(datalong =df , id ="id" ,
+  time = "time" , manifestNames = c('Stress', "Quality"))
+
+df_wide <- ctIntervalise(datawide = df_wide0,
+            Tpoints = 10, n.manifest = 2,
+            manifestNames = c("Stress", "Quality"))
+
+dataframewide<- as.data.frame(df_wide)
+```
+```{r}
+library(tidyverse)
+dataframewide <- dataframewide %>% select( Quality_T0, Quality_T1,Quality_T2, dT1:dT3)
+head(dataframewide)
+```
+
+(time points can also be interindividually varying)
+:::
+
+::: {.fragmet}
+Function to convert to wideformat:
+```r
+df_wide <- ctLongToWide(datalong = df_long, id = "id",
+  time = "time", manifestNames = c("Quality", ...))
+```
+:::
+
+::: {.fragmet}
+Function to create time intervals:
+```r
+df_wide <- ctIntervalise(datawide = wideexample, Tpoints = 3, n
+  manifest = 2, manifestNames = c("Quality", ...))
+```
+:::
+
+# Next: Model set-up and interpretation walkthrough
+
+## {background-image="figures/figure2-1.png" background-size="contain" background-repeat="no-repeat"}

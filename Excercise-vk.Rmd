@@ -1,0 +1,157 @@
+---
+title: "CM6 Hands on ctsem modelling - Excercise Solution"
+author: "Leonard Kosanke & Valentin Kriegmair"
+date: "18-01-2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The following are exercises based on a toy example for showcasing ctsem's
+capabilities by Charles Driver (https://cdriver.netlify.app/post/dtbivariate/).
+(The code is simplified and adjusted to an exercise format with ctsemOMX.)
+
+## Setup: Install & load required packages
+```{r}
+#install.packages("ctsem")
+library(ctsem)
+library(ctsemOMX)
+```
+
+## Simulate some data (ignore this)
+```{r}
+set.seed(1)
+
+# simulate data with 10 time points:
+gm <- ctModel(LAMBDA=matrix(c(
+  1,0,
+  .8,0,
+  0,1),ncol=2),
+  MANIFESTVAR = diag(.5,3),
+  DIFFUSION=matrix(c(.8,.5,0,.2),2,2),
+  DRIFT=c(
+    -.5,0,
+    -.3,-.2),
+  T0MEANS = c(20,-10),
+  TRAITVAR=matrix(c(1,.7,0,.2),2,2),
+  Tpoints=10,manifestNames = c('Stress','Stress2','Quality'))
+
+df <-data.frame(ctGenerate(ctmodelobj = gm,n.subjects = 100,burnin = 2))
+```
+
+# Excercises
+"For this example, we have collected data from workers starting a new job. 
+The data include measures of stress, and quality of the employees output. 
+We are interested in a) how stress and quality change from the beginning of the 
+job, b) whether there is any evidence for one process causing the other." 
+(see https://cdriver.netlify.app/post/dtbivariate/ for the full example)
+
+## Excercise 0
+Look at the data `df` and bring it in the correct format for the ctfit() function.
+
+Here we just provide the solution feel free to just skip if you don't want to bother
+with data wrangling right now.
+```{r}
+# from long format to wide format with absolute time values
+df_wide0 <- ctLongToWide(datalong =df , id ="id" ,
+  time = "time" , manifestNames = c('Stress', "Quality"))
+
+
+# from absolute time points to time intervals (dT1 = T1 - T0 etc. ...)
+df_wide <- ctIntervalise(datawide = df_wide0, Tpoints = 10, n.manifest = 2,
+                         manifestNames = c("Stress", "Quality"))
+
+
+# note in this toy example every subject has the same measurement time at each 
+# wave for faster computations. 
+# In ct modelling we reflect individually varying time points and
+# intervals and using this even model more complex dynamics like oscillations.
+
+head(df_wide)
+```
+
+## Exercise 1
+Set up a continuous SEM model using the `ctModel()` function that models the
+bivariate latent process (ignoring `Stress2` for now) in the data frame `df_wide`.
+```{r}
+
+
+```
+
+## Exercise 2
+Fit the model to the data using the `ctfit()` function.
+```{r}
+
+```
+
+## Exercise 3
+Plot the resulting fit for the auto and cross-effects (put `wait = F`)
+```{r}
+
+```
+
+## Exercise 4
+Look at the fit summary (`summary(example1fit)`) and the plots. Interpret the model 
+parameters and its fit in your own words. Do Stress and Quality influence each other?
+How does this change as a function of the time interval change? Which variable
+is more stable?
+```{r}
+
+```
+### Cross-effects:
+
+
+
+### Auto-effects:
+
+
+# Excercise 5 (optional)
+Extend the model to account for unit heterogeneity by modelling intersubjective 
+variability (random intercept) of manifest variables. 
+Hint: simply add the `TRAITVAR = "auto"` argument to the model. Use the plot
+function to graphically compare the model to the previous model. How does your
+interpretation change?
+```{r}
+
+
+```
+
+
+# Excercise 6 (optional)
+Extend the `LAMBDA` matrix to include the second Stress indicator `Stress2`.
+(Note matrices are filled rowise in ctsem)
+
+first run this to extend the data set:
+```{r}
+# from long format to wide format with absolute time values
+df_wide1 <- ctLongToWide(datalong =df , id ="id" ,
+  time = "time" , manifestNames = c('Stress', "Stress2", "Quality"))
+
+
+# from absolute time points to time intervals (dT1 = T1 - T0 etc. ...)
+df_wide2 <- ctIntervalise(datawide = df_wide1, Tpoints = 10, n.manifest = 3,
+                         manifestNames = c("Stress", "Stress2", "Quality"))
+
+
+# note in this toy example every subject has the same measurement time at each 
+# wave for faster computations. 
+# In ct modelling we reflect individually varying time points and
+# intervals and using this even model more complex dynamics like oscillations.
+
+head(df_wide2)
+```
+
+Model with additional indicator `Stress2`:
+```{r}
+
+
+```
+
+Fit the model:
+```{r}
+factorfit <- ctFit(datawide = df_wide2, ctmodelobj = factormodel)
+
+summary(factorfit)
+```
