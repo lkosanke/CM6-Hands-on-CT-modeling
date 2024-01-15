@@ -1,5 +1,5 @@
 ---
-title: "Hands On continious time modeling with ctsem"
+title: "Hands On continuous time modeling with ctsem"
 author: "Valentin Kriegmair"
 format: 
   revealjs:
