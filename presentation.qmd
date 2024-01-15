@@ -1,5 +1,5 @@
 ---
-title: "Hands On continuous time modeling with ctsem"
+title: "Hands On Continuous Time Modeling With ctsem"
 author: "Leonard Kosanke & Valentin Kriegmair"
 format: 
   revealjs:
@@ -12,9 +12,10 @@ format:
 
 ## Outline
 * Recap
+* Introduction to ctsem
 * Walk-through
 * Excercise
-* Summary
+* Solution
 
 ## Recap I
 What are the assumptions about time in the general cross lagged panel model (GCLPM)?
@@ -42,7 +43,7 @@ Multivariate stochastic differential equation:
 \mathrm{d} \boldsymbol{\eta}_i(t)=\left({\mathbf{A}} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
 \end{gather*}
 
-## Recap II
+## Recap II {visibility="uncounted"}
 Multivariate stochastic \color{red}{differential} equation:
 \begin{gather*}
 \color{red}{\mathrm{d}} \boldsymbol{\eta}_i(\color{red}{t})=\left(\mathbf{A} \boldsymbol{\eta}_i(\color{red}{t})+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \color{red}{\mathrm{d} t}+\mathbf{G} \color{red}{\mathrm{d}} \mathbf{W}_i(\color{red}{t})
@@ -50,7 +51,7 @@ Multivariate stochastic \color{red}{differential} equation:
 modelling change in latent variables $\boldsymbol{\eta}_i(t)$
  as a function of time over infinitesimal small time steps $\color{red}{\mathrm{d} t}$
 
-## Recap II
+## Recap II {visibility="uncounted"}
 Multivariate stochastic differential equation:
 \begin{gather*}
 \mathrm{d} \boldsymbol{\eta}_i(t)=\left(\color{red}{\mathbf{A}} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
@@ -60,7 +61,7 @@ modelling change as a function of time over infinitesimal small time steps $\mat
 $\color{red}{\mathbf{A}}$: drift matrix with auto effects on the diagonal and cross effects on the off-diagonals ($\mathbf{A} \in \mathbb{R}^{v \times v}$).
 
 
-## Recap II {.smaller}
+## Recap II {.smaller visibility="uncounted"}
 Multivariate stochastic differential equation:
 \begin{gather*}
 \mathrm{d} \boldsymbol{\eta}_i(t)=\left(\mathbf{A} \boldsymbol{\eta}_i(t)+\mathbf{B} \mathbf{z}_i+\mathbf{M} \boldsymbol{\chi}_i(t)\right) \mathrm{d} t+\mathbf{G} \mathrm{d} \mathbf{W}_i(t)
