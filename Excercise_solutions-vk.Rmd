@@ -73,7 +73,7 @@ head(df_wide)
 
 ## Exercise 1
 Set up a continuous SEM model using the `ctModel()` function that models the
-bivariate (ignoring `Stress2` for now) in the data frame `df_wide`.
+bivariate latent process (ignoring `Stress2` for now) in the data frame `df_wide`.
 ```{r}
 model1 <- ctModel(n.latent = 2, n.manifest = 2, Tpoints = 10, 
                          manifestNames = c("Stress", "Quality"),
